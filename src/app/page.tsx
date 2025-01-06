@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { currentUser } from '@clerk/nextjs/server'
 
-export default function Home() {
+export default async function Page() {
+  const user = await currentUser()
+
+  if (!user) return <div>Not signed in</div>
+
   return (
     <div>
-      <Button>Shad Btn</Button>
+      Hello {user?.fullName} 😁
+      <img src={user?.imageUrl} alt="" />
     </div>
-  );
+  )
 }
