@@ -1,4 +1,5 @@
 import { currentUser } from '@clerk/nextjs/server'
+import { UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 
 export default async function Page() {
@@ -7,7 +8,7 @@ export default async function Page() {
   if (!user) return <div>Not signed in</div>
 
   return (
-    <div>
+    <div className="w-full min-h-screen flex items-center justify-around">
       Hello {user?.fullName} 😁
       <Image
         src={user?.imageUrl}
@@ -16,6 +17,7 @@ export default async function Page() {
         width={200}
         className="rounded-full"
       />
+      <UserButton />
     </div>
   )
 }
