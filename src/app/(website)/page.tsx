@@ -1,11 +1,11 @@
-import { currentUser } from '@clerk/nextjs/server'
-import { UserButton } from '@clerk/nextjs'
-import Image from 'next/image'
+import { currentUser } from "@clerk/nextjs/server";
+import { UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 
 export default async function Page() {
-  const user = await currentUser()
+  const user = await currentUser();
 
-  if (!user) return <div>Not signed in</div>
+  if (!user) return <div>Not signed in</div>;
 
   return (
     <div className="w-full min-h-screen flex items-center justify-around">
@@ -19,5 +19,5 @@ export default async function Page() {
       />
       <UserButton />
     </div>
-  )
+  );
 }
