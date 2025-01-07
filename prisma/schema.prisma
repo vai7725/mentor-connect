@@ -8,18 +8,27 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email     String    @unique
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String      @unique
   firstname String?
   lastname  String?
-  clerkid   String    @unique
-  role      USER_ROLE @default(STUDENT)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  userImage String?
+  status    USER_STATUS @default(ACTIVE)
+  role      USER_ROLE   @default(STUDENT)
+  clerkid   String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 enum USER_ROLE {
   STUDENT
   TEACHER
   ADMIN
+}
+
+enum USER_STATUS {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DELETED
 }
