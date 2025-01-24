@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,15 +7,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
-import { Button } from '../ui/button'
-import SideNav from './sideNav'
-import Container from './Container'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
+} from '@/components/ui/navigation-menu';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import { Button } from '../ui/button';
+import SideNav from './sideNav';
+import Container from './Container';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
-type Props = {}
+type Props = {};
 
 export default function Navbar({}: Props) {
   return (
@@ -66,5 +66,5 @@ export default function Navbar({}: Props) {
         </nav>
       </Container>
     </header>
-  )
+  );
 }

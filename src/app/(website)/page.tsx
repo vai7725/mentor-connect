@@ -1,8 +1,8 @@
-import SideNav from '@/components/uiComponents/sideNav'
-import { currentUser } from '@clerk/nextjs/server'
+import SideNav from '@/components/uiComponents/sideNav';
+import { currentUser } from '@clerk/nextjs/server';
 
 export default async function Page() {
-  const user = await currentUser()
+  const user = await currentUser();
 
-  return <div></div>
+  return <div></div>;
 }

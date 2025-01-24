@@ -1,9 +1,9 @@
-import Navbar from '@/components/uiComponents/navbar'
-import React from 'react'
+import Navbar from '@/components/uiComponents/navbar';
+import React from 'react';
 
 type Props = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 const Layout = ({ children }: Props) => {
   return (
@@ -11,7 +11,7 @@ const Layout = ({ children }: Props) => {
       <Navbar />
       {children}
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
