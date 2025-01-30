@@ -13,11 +13,11 @@ model User {
   firstname         String?
   lastname          String?
   userImage         String?
-  status            USER_STATUS  @default(ACTIVE)
+  status            USER_STATUS  @default(INACTIVE)
   role              USER_ROLE    @default(USER)
   clerkid           String       @unique
   isProfileComplete Boolean      @default(false)
-  activePage        String
+  activePage        Int          @default(1)
   socialLinks       socialLink[]
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
