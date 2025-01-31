@@ -8,30 +8,73 @@ datasource db {
 }
 
 model User {
-  id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email             String       @unique
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   firstname         String?
   lastname          String?
+  email             String            @unique
+  phone             String?
   userImage         String?
-  status            USER_STATUS  @default(INACTIVE)
-  role              USER_ROLE    @default(USER)
-  clerkid           String       @unique
-  isProfileComplete Boolean      @default(false)
-  activePage        Int          @default(1)
-  socialLinks       socialLink[]
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  status            USER_STATUS       @default(INACTIVE)
+  role              USER_ROLE?
+  clerkid           String            @unique
+  isProfileComplete Boolean           @default(false)
+  activePage        Int               @default(1)
+  skills            String[]
+  yearsOfExperience String?
+  socialLinks       SocialLink[]
+  educationDetails  EducationDetails?
+  workExperience    WorkExperience[]
+  companyDetails    CompanyDetails?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }
 
-model otherUserInfo {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  givenTest test[]
-  skills    String[]
-  // job information will be added later
+model EducationDetails {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  highestDegree  HIGHEST_DEGREE?
+  fieldOfStudy   String?
+  graduationYear String?
+  user           User?           @relation(fields: [userId], references: [id])
+  userId         String?         @unique @db.Uuid
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model WorkExperience {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company             String?
+  jobTitle            String?
+  startDate           DateTime?
+  endDate             DateTime?
+  workDuration        String?
+  keyResponsibilities String?
+  user                User      @relation(fields: [userId], references: [id])
+  userId              String    @db.Uuid
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model CompanyDetails {
+  id                      String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyName             String?
+  companyDescription      String?
+  industry                COMPANY_INDUSTRY_TYPE?
+  companySize             String?
+  foundedYear             String?
+  companyAddress          String?
+  companyAddressCity      String?
+  companyAddressCountry   String?
+  companyWebsite          String?
+  companyEmail            String?
+  companyPhone            String?
+  companyMissionStatement String?
+  companyCoreValues       String?
+  user                    User?                  @relation(fields: [userId], references: [id])
+  userId                  String?                @unique @db.Uuid
 }
 
 enum USER_ROLE {
-  USER
+  CANDIDATE
   ADMIN
   COMPANY
 }
@@ -43,7 +86,48 @@ enum USER_STATUS {
   DELETED
 }
 
-model socialLink {
+enum HIGHEST_DEGREE {
+  HIGH_SCHOOL
+  ASSOCIATE
+  BACHELOR
+  MASTER
+  DOCTORATE
+  POST_DOCTORATE
+  DIPLOMA
+  CERTIFICATE
+  OTHER
+}
+
+enum COMPANY_INDUSTRY_TYPE {
+  SOFTWARE_DEVELOPMENT
+  IT_SERVICES
+  AI_ML
+  CLOUD_COMPUTING_DEVOPS
+  CYBERSECURITY
+  DATA_SCIENCE_ANALYTICS
+  MOBILE_APP_DEVELOPMENT
+  WEB_DEVELOPMENT
+  ECOMMERCE_RETAIL_TECH
+  FINTECH
+  HEALTHTECH
+  EDTECH
+  GAMING_ENTERTAINMENT
+  IOT
+  BLOCKCHAIN_CRYPTOCURRENCY
+  AR_VR
+  AUTOMOTIVE_AUTONOMOUS_VEHICLES
+  AEROSPACE_DEFENSE
+  TELECOMMUNICATIONS
+  ENTERPRISE_SOFTWARE
+  OPEN_SOURCE_DEVELOPER_TOOLS
+  CONSULTING_PROFESSIONAL_SERVICES
+  STARTUPS_INCUBATORS
+  GOVERNMENT_PUBLIC_SECTOR
+  NONPROFIT_SOCIAL_IMPACT
+  OTHER
+}
+
+model SocialLink {
   id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title  String
   link   String
@@ -52,13 +136,11 @@ model socialLink {
 }
 
 model test {
-  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title           String
-  questions       question[]
-  result          result         @relation(fields: [resultId], references: [id])
-  resultId        String         @db.Uuid
-  otherUserInfo   otherUserInfo? @relation(fields: [otherUserInfoId], references: [id])
-  otherUserInfoId String?        @db.Uuid
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  questions question[]
+  result    result     @relation(fields: [resultId], references: [id])
+  resultId  String     @db.Uuid
 }
 
 model question {

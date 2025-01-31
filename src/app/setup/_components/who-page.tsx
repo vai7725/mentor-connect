@@ -1,4 +1,5 @@
 'use client';
+import { onSaveWhoData } from '@/actions/setup';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,10 +11,11 @@ import {
 import { Building2, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-function WhoPage() {
+const WhoPage = () => {
   const router = useRouter();
 
-  const handleSelection = (type: 'company' | 'candidate') => {
+  const handleSelection = async (type: 'company' | 'candidate') => {
+    await onSaveWhoData(type.toUpperCase());
     router.push(`/setup/${type}`);
   };
 
@@ -51,6 +53,6 @@ function WhoPage() {
       </Card>
     </div>
   );
-}
+};
 
 export default WhoPage;

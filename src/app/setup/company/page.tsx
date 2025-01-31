@@ -20,6 +20,12 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
+import {
+  saveSetupCompanyData01,
+  saveSetupCompanyData02,
+  saveSetupCompanyData03,
+  saveSetupCompanyData04,
+} from '@/actions/companySetup';
 
 const steps = [
   { id: 'basic-info', title: 'Basic Information' },
@@ -53,15 +59,24 @@ const CompanyPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const router = useRouter();
+
+  const saveFunctions = [
+    saveSetupCompanyData01,
+    saveSetupCompanyData02,
+    saveSetupCompanyData03,
+    saveSetupCompanyData04,
+  ];
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNextButton = () => {
+  const handleNextButton = async () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      await saveFunctions[currentStep](formData);
     }
   };
 
@@ -75,10 +90,9 @@ const CompanyPage = () => {
     router.push(`/setup`);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
+    await saveSetupCompanyData04(formData);
   };
 
   return (
@@ -115,11 +129,82 @@ const CompanyPage = () => {
                       <SelectValue placeholder="Select your industry" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="tech">Technology</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="healthcare">Healthcare</SelectItem>
-                      <SelectItem value="education">Education</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="SOFTWARE_DEVELOPMENT">
+                        Software Development
+                      </SelectItem>
+                      <SelectItem value="IT_SERVICES">
+                        Information Technology (IT) Services
+                      </SelectItem>
+                      <SelectItem value="AI_ML">
+                        Artificial Intelligence (AI) & Machine Learning (ML)
+                      </SelectItem>
+                      <SelectItem value="CLOUD_COMPUTING_DEVOPS">
+                        Cloud Computing & DevOps
+                      </SelectItem>
+                      <SelectItem value="CYBERSECURITY">
+                        Cybersecurity
+                      </SelectItem>
+                      <SelectItem value="DATA_SCIENCE_ANALYTICS">
+                        Data Science & Analytics
+                      </SelectItem>
+                      <SelectItem value="MOBILE_APP_DEVELOPMENT">
+                        Mobile App Development
+                      </SelectItem>
+                      <SelectItem value="WEB_DEVELOPMENT">
+                        Web Development
+                      </SelectItem>
+                      <SelectItem value="ECOMMERCE_RETAIL_TECH">
+                        E-commerce & Retail Tech
+                      </SelectItem>
+                      <SelectItem value="FINTECH">
+                        Fintech (Financial Technology)
+                      </SelectItem>
+                      <SelectItem value="HEALTHTECH">
+                        Healthtech (Health Technology)
+                      </SelectItem>
+                      <SelectItem value="EDTECH">
+                        Edtech (Education Technology)
+                      </SelectItem>
+                      <SelectItem value="GAMING_ENTERTAINMENT">
+                        Gaming & Entertainment
+                      </SelectItem>
+                      <SelectItem value="IOT">
+                        Internet of Things (IoT)
+                      </SelectItem>
+                      <SelectItem value="BLOCKCHAIN_CRYPTOCURRENCY">
+                        Blockchain & Cryptocurrency
+                      </SelectItem>
+                      <SelectItem value="AR_VR">
+                        Augmented Reality (AR) & Virtual Reality (VR)
+                      </SelectItem>
+                      <SelectItem value="AUTOMOTIVE_AUTONOMOUS_VEHICLES">
+                        Automotive & Autonomous Vehicles
+                      </SelectItem>
+                      <SelectItem value="AEROSPACE_DEFENSE">
+                        Aerospace & Defense
+                      </SelectItem>
+                      <SelectItem value="TELECOMMUNICATIONS">
+                        Telecommunications
+                      </SelectItem>
+                      <SelectItem value="ENTERPRISE_SOFTWARE">
+                        Enterprise Software (ERP, CRM, etc.)
+                      </SelectItem>
+                      <SelectItem value="OPEN_SOURCE_DEVELOPER_TOOLS">
+                        Open Source & Developer Tools
+                      </SelectItem>
+                      <SelectItem value="CONSULTING_PROFESSIONAL_SERVICES">
+                        Consulting & Professional Services
+                      </SelectItem>
+                      <SelectItem value="STARTUPS_INCUBATORS">
+                        Startups & Incubators
+                      </SelectItem>
+                      <SelectItem value="GOVERNMENT_PUBLIC_SECTOR">
+                        Government & Public Sector
+                      </SelectItem>
+                      <SelectItem value="NONPROFIT_SOCIAL_IMPACT">
+                        Nonprofit & Social Impact
+                      </SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
