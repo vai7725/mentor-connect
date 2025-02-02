@@ -16,6 +16,7 @@ export const saveSetupCompanyData01 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
         companyDetails: {
           update: {
             companyName: data?.companyName,
@@ -49,6 +50,7 @@ export const saveSetupCompanyData02 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
         companyDetails: {
           update: {
             foundedYear: data?.foundedYear,
@@ -85,6 +87,7 @@ export const saveSetupCompanyData03 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
         companyDetails: {
           update: {
             companyAddress: data?.address,
@@ -122,6 +125,8 @@ export const saveSetupCompanyData04 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
+        isProfileComplete: true,
         companyDetails: {
           update: {
             linkedIn: data?.linkedIn,

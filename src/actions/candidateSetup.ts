@@ -1,6 +1,7 @@
 'use server';
 import { client } from '@/lib/prisma';
 import { currentUser } from '@clerk/nextjs/server';
+import { HIGHEST_DEGREE } from '@prisma/client';
 
 export const saveSetupCandidateData01 = async (data: {
   fullName: string;
@@ -17,6 +18,7 @@ export const saveSetupCandidateData01 = async (data: {
       data: {
         firstname: data.fullName,
         phone: data.phone,
+        activePage: { increment: 1 },
       },
     });
 
@@ -44,9 +46,10 @@ export const saveSetupCandidateData02 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
         educationDetails: {
           update: {
-            highestDegree: data.degree,
+            highestDegree: HIGHEST_DEGREE[data.degree],
             fieldOfStudy: data.fieldOfStudy,
             graduationYear: data.graduationYear,
           },
@@ -79,6 +82,7 @@ export const saveSetupCandidateData03 = async (data: {
     await client.user.update({
       where: { clerkid: user.id },
       data: {
+        activePage: { increment: 1 },
         workExperience: {
           update: {
             company: data.company,
@@ -115,6 +119,8 @@ export const saveSetupCandidateData04 = async (data: {
       data: {
         skills: data.skills,
         yearsOfExperience: data.experience,
+        activePage: { increment: 1 },
+        isProfileComplete: true,
       },
     });
 

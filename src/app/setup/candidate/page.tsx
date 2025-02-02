@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -20,44 +20,50 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import {
   saveSetupCandidateData01,
   saveSetupCandidateData02,
   saveSetupCandidateData03,
   saveSetupCandidateData04,
 } from '@/actions/candidateSetup';
+import { isSetupComplete, resetSetup } from '@/actions/setup';
 
-const steps = [
+type Step = {
+  id: string;
+  title: string;
+};
+
+const steps: Step[] = [
   { id: 'personal', title: 'Personal Information' },
   { id: 'education', title: 'Education' },
   { id: 'experience', title: 'Work Experience' },
   { id: 'skills', title: 'Skills' },
 ];
 
-// type FormData = {
-//   fullName: string;
-//   email: string;
-//   phone: string;
-//   degree: string;
-//   major: string;
-//   graduationYear: string;
-//   company: string;
-//   jobTitle: string;
-//   workDuration: string;
-//   responsibilities: string;
-//   skills: string[];
-//   experience: string;
-// };
+type FormData = {
+  fullName: string;
+  email: string;
+  phone: string;
+  degree: string;
+  fieldOfStudy: string;
+  graduationYear: string;
+  company: string;
+  jobTitle: string;
+  workDuration: string;
+  responsibilities: string;
+  skills: string[];
+  experience: string;
+};
 
 const CandidatesPage = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
     phone: '',
     degree: '',
-    major: '',
+    fieldOfStudy: '',
     graduationYear: '',
     company: '',
     jobTitle: '',
@@ -74,6 +80,52 @@ const CandidatesPage = () => {
     saveSetupCandidateData03,
     saveSetupCandidateData04,
   ];
+
+  const fetchSetup = async () => {
+    const setupData = await isSetupComplete();
+    const setup = setupData.data as {
+      isProfileComplete: boolean;
+      activePage: number;
+      role: string;
+    };
+
+    if (setup.isProfileComplete) {
+      return redirect('/dashboard');
+    }
+
+    if (!setup.isProfileComplete && setup.activePage === 0) {
+      return redirect('/setup');
+    }
+
+    if (!setup.isProfileComplete && setup.role === 'COMPANY') {
+      return redirect('/setup/company');
+    }
+
+    setCurrentStep(setup.activePage - 1);
+  };
+
+  useEffect(() => {
+    fetchSetup();
+  }, []);
+
+  const isStepComplete = (step: number) => {
+    switch (step) {
+      case 0:
+        return formData.fullName.trim() !== '' && formData.phone.trim() !== '';
+      case 1:
+        return (
+          formData.degree.trim() !== '' &&
+          formData.fieldOfStudy.trim() !== '' &&
+          formData.graduationYear.trim() !== ''
+        );
+      case 3:
+        return (
+          formData.skills.length !== 0 && formData.experience.trim() !== ''
+        );
+      default:
+        return false;
+    }
+  };
 
   const handleNextButton = async () => {
     if (currentStep < steps.length - 1) {
@@ -95,8 +147,11 @@ const CandidatesPage = () => {
     }
   };
 
-  const handleBackButton = () => {
-    router.push(`/setup`);
+  const handleBackButton = async () => {
+    const respons = await resetSetup();
+    if (respons.status === 200) {
+      router.push(`/setup`);
+    }
   };
 
   const handleInputChange = (
@@ -164,6 +219,7 @@ const CandidatesPage = () => {
                     placeholder="Rama Chandra"
                     value={formData.fullName}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div>
@@ -174,6 +230,7 @@ const CandidatesPage = () => {
                     placeholder="rama@example.com"
                     value={formData.email}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div>
@@ -184,6 +241,7 @@ const CandidatesPage = () => {
                     placeholder="+91 9412345678"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -197,6 +255,7 @@ const CandidatesPage = () => {
                     onValueChange={(value) =>
                       handleSelectChange(value, 'degree')
                     }
+                    required
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select your highest degree" />
@@ -219,10 +278,11 @@ const CandidatesPage = () => {
                 <div>
                   <Label htmlFor="major">Field of Study</Label>
                   <Input
-                    id="major"
+                    id="fieldOfStudy"
                     placeholder="e.g., Computer Science"
-                    value={formData.major}
+                    value={formData.fieldOfStudy}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div>
@@ -233,6 +293,7 @@ const CandidatesPage = () => {
                     placeholder="YYYY"
                     value={formData.graduationYear}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -304,6 +365,7 @@ const CandidatesPage = () => {
                           value={skill}
                           checked={formData.skills.includes(skill)}
                           onChange={handleCheckboxChange}
+                          required
                         />
                         <span>{skill}</span>
                       </label>
@@ -353,7 +415,14 @@ const CandidatesPage = () => {
                   Skip
                 </div>
               )}
-              <Button onClick={handleNextButton}>
+              <Button
+                onClick={
+                  currentStep === steps.length - 1
+                    ? handleSubmit
+                    : handleNextButton
+                }
+                disabled={!isStepComplete(currentStep)}
+              >
                 {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
               </Button>
             </div>

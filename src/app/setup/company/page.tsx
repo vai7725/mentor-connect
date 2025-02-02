@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,13 +19,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import {
   saveSetupCompanyData01,
   saveSetupCompanyData02,
   saveSetupCompanyData03,
   saveSetupCompanyData04,
 } from '@/actions/companySetup';
+import { isSetupComplete, resetSetup } from '@/actions/setup';
 
 const steps = [
   { id: 'basic-info', title: 'Basic Information' },
@@ -69,8 +70,68 @@ const CompanyPage = () => {
     saveSetupCompanyData04,
   ];
 
+  const fetchSetup = async () => {
+    const setupData = await isSetupComplete();
+    const setup = setupData.data as {
+      isProfileComplete: boolean;
+      activePage: number;
+      role: string;
+    };
+
+    if (setup.isProfileComplete) {
+      return redirect('/dashboard');
+    }
+
+    if (!setup.isProfileComplete && setup.activePage === 0) {
+      return redirect('/setup');
+    }
+
+    if (!setup.isProfileComplete && setup.role === 'CANDIDATE') {
+      return redirect('/setup/candidate');
+    }
+
+    setCurrentStep(setup.activePage - 1);
+  };
+
+  useEffect(() => {
+    fetchSetup();
+  }, []);
+
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const isStepComplete = (step: number) => {
+    switch (step) {
+      case 0:
+        return (
+          formData.companyName.trim() !== '' &&
+          formData.industry.trim() !== '' &&
+          formData.companySize.trim() !== ''
+        );
+      case 1:
+        return (
+          formData.foundedYear.trim() !== '' &&
+          formData.companyDescription.trim() !== ''
+        );
+      case 2:
+        return (
+          formData.address.trim() !== '' &&
+          formData.city.trim() !== '' &&
+          formData.country.trim() !== '' &&
+          formData.website.trim() !== '' &&
+          formData.contactEmail.trim() !== '' &&
+          formData.phoneNumber.trim() !== ''
+        );
+      case 3:
+        return (
+          formData.linkedIn.trim() !== '' &&
+          formData.missionStatement.trim() !== '' &&
+          formData.coreValues.trim() !== ''
+        );
+      default:
+        return false;
+    }
   };
 
   const handleNextButton = async () => {
@@ -86,8 +147,11 @@ const CompanyPage = () => {
     }
   };
 
-  const handleBackButton = () => {
-    router.push(`/setup`);
+  const handleBackButton = async () => {
+    const respons = await resetSetup();
+    if (respons.status === 200) {
+      router.push(`/setup`);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -116,6 +180,7 @@ const CompanyPage = () => {
                     value={formData.companyName}
                     onChange={handleInputChange}
                     placeholder="One97 Communications"
+                    required
                   />
                 </div>
                 <div>
@@ -124,6 +189,7 @@ const CompanyPage = () => {
                     onValueChange={(value) =>
                       handleSelectChange('industry', value)
                     }
+                    required
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select your industry" />
@@ -214,6 +280,7 @@ const CompanyPage = () => {
                     onValueChange={(value) =>
                       handleSelectChange('companySize', value)
                     }
+                    required
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select company size" />
@@ -239,6 +306,7 @@ const CompanyPage = () => {
                     value={formData.foundedYear}
                     onChange={handleInputChange}
                     placeholder="e.g., 2010"
+                    required
                   />
                 </div>
                 <div>
@@ -251,6 +319,7 @@ const CompanyPage = () => {
                     value={formData.companyDescription}
                     onChange={handleInputChange}
                     placeholder="Tell us about your company..."
+                    required
                   />
                 </div>
               </>
@@ -265,6 +334,7 @@ const CompanyPage = () => {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="123 Main St"
+                    required
                   />
                 </div>
                 <div>
@@ -275,6 +345,7 @@ const CompanyPage = () => {
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="Delhi"
+                    required
                   />
                 </div>
                 <div>
@@ -285,6 +356,7 @@ const CompanyPage = () => {
                     value={formData.country}
                     onChange={handleInputChange}
                     placeholder="India"
+                    required
                   />
                 </div>
                 <div>
@@ -295,6 +367,7 @@ const CompanyPage = () => {
                     value={formData.website}
                     onChange={handleInputChange}
                     placeholder="https://www.example.com"
+                    required
                   />
                 </div>
                 <div>
@@ -306,6 +379,7 @@ const CompanyPage = () => {
                     onChange={handleInputChange}
                     type="email"
                     placeholder="contact@example.com"
+                    required
                   />
                 </div>
                 <div>
@@ -316,6 +390,7 @@ const CompanyPage = () => {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     placeholder="+91 987654321"
+                    required
                   />
                 </div>
               </>
@@ -330,6 +405,7 @@ const CompanyPage = () => {
                     value={formData.linkedIn}
                     onChange={handleInputChange}
                     placeholder="https://www.linkedin.com/company/example"
+                    required
                   />
                 </div>
                 <div>
@@ -340,6 +416,7 @@ const CompanyPage = () => {
                     value={formData.missionStatement}
                     onChange={handleInputChange}
                     placeholder="Our mission is to..."
+                    required
                   />
                 </div>
                 <div>
@@ -350,6 +427,7 @@ const CompanyPage = () => {
                     value={formData.coreValues}
                     onChange={handleInputChange}
                     placeholder="Our core values include..."
+                    required
                   />
                 </div>
               </>
@@ -363,7 +441,14 @@ const CompanyPage = () => {
             )}
 
             <div className="flex justify-center items-center gap-x-6">
-              <Button onClick={handleNextButton}>
+              <Button
+                onClick={
+                  currentStep === steps.length - 1
+                    ? handleSubmit
+                    : handleNextButton
+                }
+                disabled={!isStepComplete(currentStep)}
+              >
                 {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
               </Button>
             </div>

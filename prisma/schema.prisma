@@ -15,10 +15,10 @@ model User {
   phone             String?
   userImage         String?
   status            USER_STATUS       @default(INACTIVE)
-  role              USER_ROLE?
+  role              USER_ROLE?        @default(NULL)
   clerkid           String            @unique
   isProfileComplete Boolean           @default(false)
-  activePage        Int               @default(1)
+  activePage        Int               @default(0)
   skills            String[]
   yearsOfExperience String?
   socialLinks       SocialLink[]
@@ -77,6 +77,7 @@ enum USER_ROLE {
   CANDIDATE
   ADMIN
   COMPANY
+  NULL
 }
 
 enum USER_STATUS {
