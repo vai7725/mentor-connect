@@ -90,7 +90,7 @@ const CandidatesPage = () => {
     };
 
     if (setup.isProfileComplete) {
-      return redirect('/dashboard');
+      return redirect('/setup/candidate/success');
     }
 
     if (!setup.isProfileComplete && setup.activePage === 0) {
@@ -143,7 +143,7 @@ const CandidatesPage = () => {
   const handleSkipButton = () => {
     setCurrentStep(currentStep + 1);
     if (currentStep === steps.length - 1) {
-      router.push(`/dashboard`);
+      router.push(`/setup/candidate/success`);
     }
   };
 

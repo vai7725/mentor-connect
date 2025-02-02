@@ -19,51 +19,49 @@ type Props = {};
 
 export default function Navbar({}: Props) {
   return (
-    <header className="bg-gray-300">
-      <Container>
-        <nav className="grid grid-cols-12 py-4">
-          <div className="col-span-3 sm:col-span-1 flex items-center justify-start">
-            Logo
-          </div>
+    <header className="h-[80px] shadow-md">
+      <Container className="grid grid-cols-12 h-full">
+        <div className="col-span-3 sm:col-span-1 flex items-center justify-start">
+          Logo
+        </div>
 
-          <div className="col-span-6 sm:col-span-10 flex justify-center items-center">
-            <NavigationMenu className="hidden md:flex">
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link href={'/'} className={cn(navigationMenuTriggerStyle())}>
-                    Home
-                  </Link>
-                </NavigationMenuItem>
+        <div className="col-span-6 sm:col-span-10 flex justify-center items-center">
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href={'/'} className={cn(navigationMenuTriggerStyle())}>
+                  Home
+                </Link>
+              </NavigationMenuItem>
 
-                {/* We'll remove these drop down if not needed */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <NavigationMenuLink>Link</NavigationMenuLink>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Item Two</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <NavigationMenuLink>Else</NavigationMenuLink>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+              {/* We'll remove these drop down if not needed */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <NavigationMenuLink>Link</NavigationMenuLink>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Item Two</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <NavigationMenuLink>Else</NavigationMenuLink>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
 
-          <div className="col-span-3 sm:col-span-1 flex items-center justify-end">
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <Button>
-                <SignInButton />
-              </Button>
-            </SignedOut>
-            <SideNav />
-          </div>
-        </nav>
+        <div className="col-span-3 sm:col-span-1 flex items-center justify-end">
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <Button>
+              <SignInButton />
+            </Button>
+          </SignedOut>
+          <SideNav />
+        </div>
       </Container>
     </header>
   );
